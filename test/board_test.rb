@@ -15,9 +15,11 @@ class BoardTest < Minitest::Test
 # TODO: add color to pieces
 
   def test_board_saves_pieces
-    @board.set_square "a1", :rook
-    assert @board.get_square("a1") == :rook, "a1 is not ROOK"
+    @board.set_square "a1", [:rook, :white]
+    assert @board.get_square("a1") == [:rook, :white], "a1 is not ROOK white"
   end
+
+
 
   def test_board_validates_square_ids
     assert @board.is_valid_square_id?("a1") == true, "a1 is a valid square id but it was rejected"
@@ -30,11 +32,22 @@ class BoardTest < Minitest::Test
     assert @board.is_valid_square_id?("j1") == false, "j1 is a not valid square id but it was accepted"
   end
 
-=begin
   def test_board_establish_initial_setup
     @board.initial_setup
-    assert @board.get_square("a1")
-=end
+    assert @board.get_square("a1") == [:rook, :white], "a1 is not rook white"
+    assert @board.get_square("b1") == [:knight, :white], "b1 is not knight white"
+    assert @board.get_square("c1") == [:bishop, :white], "c1 is not bishop white"
+    assert @board.get_square("d1") == [:king, :white], "d1 is not king white"
+    assert @board.get_square("e1") == [:queen, :white], "e1 is not queen white"
+    assert @board.get_square("f1") == [:bishop, :white], "f1 is not bishop white"
+    assert @board.get_square("g1") == [:knight, :white], "g1 is not knight white"
+    assert @board.get_square("h1") == [:rook, :white], "h1 is not rook white"
+
+    ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"].each do |square|
+      assert @board.get_square(square) == [:pawn, :white], "#{square} is not pawn white"
+    end
+
+  end
 
 
 end
@@ -44,6 +57,22 @@ class Board
 
   def initialize
     @squares = Hash.new
+  end
+
+  def initial_setup
+    @squares["a1"] = [:rook, :white]
+    @squares["b1"] = [:knight, :white]
+    @squares["c1"] = [:bishop, :white]
+    @squares["d1"] = [:king, :white]
+    @squares["e1"] = [:queen, :white]
+    @squares["f1"] = [:bishop, :white]
+    @squares["g1"] = [:knight, :white]
+    @squares["h1"] = [:rook, :white]
+
+    ["a2", "b2", "c2", "d2", "e2", "f2", "g2", "h2"].each do |square|
+      @squares[square] = [:pawn, :white]
+    end
+
   end
 
   def get_square square_id
