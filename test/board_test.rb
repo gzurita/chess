@@ -1,5 +1,6 @@
 require 'minitest/autorun'
 require_relative 'test_helper'
+require './board'
 
 class BoardTest < Minitest::Test
 
@@ -12,7 +13,6 @@ class BoardTest < Minitest::Test
     assert @board.get_square("h8") == :empty, "h8 is not empty"
   end
 
-# TODO: add color to pieces
 
   def test_board_saves_pieces
     @board.set_square "a1", [:rook, :white]
@@ -32,6 +32,7 @@ class BoardTest < Minitest::Test
     assert @board.is_valid_square_id?("j1") == false, "j1 is a not valid square id but it was accepted"
   end
 
+
   def test_board_establish_initial_setup
     @board.initial_setup
     assert @board.get_square("a1") == [:rook, :white], "a1 is not rook white"
@@ -47,6 +48,27 @@ class BoardTest < Minitest::Test
       assert @board.get_square(square) == [:pawn, :white], "#{square} is not pawn white"
     end
 
+    assert @board.get_square("a8") == [:rook, :black], "a8 is not rook black"
+    assert @board.get_square("b8") == [:knight, :black], "b8 is not knight black"
+    assert @board.get_square("c8") == [:bishop, :black], "c8 is not bishop black"
+    assert @board.get_square("d8") == [:king, :black], "d8 is not king black"
+    assert @board.get_square("e8") == [:queen, :black], "e8 is not queen black"
+    assert @board.get_square("f8") == [:bishop, :black], "f8 is not bishop black"
+    assert @board.get_square("g8") == [:knight, :black], "g8 is not knight black"
+    assert @board.get_square("h8") == [:rook, :black], "h8 is not rook black"
+
+    ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"].each do |square|
+      assert @board.get_square(square) == [:pawn, :black], "#{square} is not pawn black"
+
+    end
+
+  end
+
+  def test_move_pawn
+    @board.initial_setup
+    @board.move_piece "a2", "a3"
+    assert @board.get_square("a2") == :empty, "a2 is not empty"
+    assert @board.get_square("a3") == [:pawn, :white], "a3 is not pawn white"
   end
 
 
@@ -60,6 +82,8 @@ class Board
   end
 
   def initial_setup
+
+    # setup white
     @squares["a1"] = [:rook, :white]
     @squares["b1"] = [:knight, :white]
     @squares["c1"] = [:bishop, :white]
@@ -73,6 +97,19 @@ class Board
       @squares[square] = [:pawn, :white]
     end
 
+    # setup black
+    @squares["a8"] = [:rook, :black]
+    @squares["b8"] = [:knight, :black]
+    @squares["c8"] = [:bishop, :black]
+    @squares["d8"] = [:king, :black]
+    @squares["e8"] = [:queen, :black]
+    @squares["f8"] = [:bishop, :black]
+    @squares["g8"] = [:knight, :black]
+    @squares["h8"] = [:rook, :black]
+
+    ["a7", "b7", "c7", "d7", "e7", "f7", "g7", "h7"].each do |square|
+      @squares[square] = [:pawn, :black]
+    end
   end
 
   def get_square square_id
@@ -91,6 +128,11 @@ class Board
       cols = ["1", "2", "3", "4", "5", "6", "7", "8"]
       return (rows.include?(square_id[0]) && cols.include?(square_id[1]))
     end
+  end
+
+  def move_piece origin, destiny
+    @squares[destiny] = @squares[origin]
+    @squares[origin] = :empty
   end
 
 end
